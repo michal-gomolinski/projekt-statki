@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_projektstatki" default="compile.module.projektstatki">
+  <dirname property="module.projektstatki.basedir" file="${ant.file.module_projektstatki}"/>
+  
+  <property name="module.jdk.home.projektstatki" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.projektstatki" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.projektstatki" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.projektstatki" value="-encoding UTF-8 -source 11 -target 11 ${compiler.args}"/>
+  
+  <property name="projektstatki.output.dir" value="${module.projektstatki.basedir}/out/production/ProjektStatki"/>
+  <property name="projektstatki.testoutput.dir" value="${module.projektstatki.basedir}/out/test/ProjektStatki"/>
+  
+  <path id="projektstatki.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="projektstatki.module.production.classpath">
+    <path refid="${module.jdk.classpath.projektstatki}"/>
+  </path>
+  
+  <path id="projektstatki.runtime.production.module.classpath">
+    <pathelement location="${projektstatki.output.dir}"/>
+  </path>
+  
+  <path id="projektstatki.module.classpath">
+    <path refid="${module.jdk.classpath.projektstatki}"/>
+    <pathelement location="${projektstatki.output.dir}"/>
+  </path>
+  
+  <path id="projektstatki.runtime.module.classpath">
+    <pathelement location="${projektstatki.testoutput.dir}"/>
+    <pathelement location="${projektstatki.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.projektstatki">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.projektstatki">
+    <patternset refid="excluded.from.module.projektstatki"/>
+  </patternset>
+  
+  <path id="projektstatki.module.sourcepath">
+    <dirset dir="${module.projektstatki.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.projektstatki" depends="compile.module.projektstatki.production,compile.module.projektstatki.tests" description="Compile module ProjektStatki"/>
+  
+  <target name="compile.module.projektstatki.production" depends="register.custom.compilers" description="Compile module ProjektStatki; production classes">
+    <mkdir dir="${projektstatki.output.dir}"/>
+    <javac2 destdir="${projektstatki.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.projektstatki}/javac">
+      <compilerarg line="${compiler.args.projektstatki}"/>
+      <bootclasspath refid="projektstatki.module.bootclasspath"/>
+      <classpath refid="projektstatki.module.production.classpath"/>
+      <src refid="projektstatki.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.projektstatki"/>
+    </javac2>
+    
+    <copy todir="${projektstatki.output.dir}">
+      <fileset dir="${module.projektstatki.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.projektstatki.tests" depends="register.custom.compilers,compile.module.projektstatki.production" description="compile module ProjektStatki; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.projektstatki" description="cleanup module">
+    <delete dir="${projektstatki.output.dir}"/>
+    <delete dir="${projektstatki.testoutput.dir}"/>
+  </target>
+</project>
